@@ -36,5 +36,5 @@ local berts = import '../berts.libsonnet';
   random_seed:  std.parseInt(std.extVar("SEED")),
   pytorch_seed: std.parseInt(std.extVar("SEED")),
   numpy_seed: std.parseInt(std.extVar("SEED")),
-  evaluate_on_test: true
+  evaluate_on_test: false
 }
