@@ -5,21 +5,26 @@ local berts = import '../berts.libsonnet';
     type : "base_reader",
     token_indexers : {
       bert : berts.indexer,
-    }
+    },
+    cache_directory : std.extVar("DATA_BASE_PATH"),
   },
   validation_dataset_reader: {
     type : "base_reader",
     token_indexers : {
       bert : berts.indexer,
     },
+    cache_directory : std.extVar("DATA_BASE_PATH"),
   },
   train_data_path: std.extVar('TRAIN_DATA_PATH'),
   validation_data_path: std.extVar('DEV_DATA_PATH'),
   test_data_path: std.extVar('TEST_DATA_PATH'),
   model: berts.classifier,
   data_loader : {
-    batch_size: std.parseInt(std.extVar('BSIZE')),
     shuffle: true,
+    samplers: {
+        type: "max_tokens_batch_sampler",
+        max_tokens: std.parseInt(std.extVar('BSIZE')),
+    }
   },
   trainer: {
     num_epochs: std.parseInt(std.extVar('EPOCHS')),

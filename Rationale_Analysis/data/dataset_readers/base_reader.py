@@ -23,9 +23,9 @@ def to_token(text):
 @DatasetReader.register("base_reader")
 class BaseReader(DatasetReader):
     def __init__(
-        self, token_indexers: Dict[str, TokenIndexer], human_prob: float = 1.0, lazy: bool = False,
+            self, token_indexers: Dict[str, TokenIndexer], human_prob: float = 1.0, lazy: bool = False, cache_directory: str = None,
     ) -> None:
-        super().__init__(lazy=lazy)
+        super().__init__(lazy=lazy, cache_directory=cache_directory)
         self._tokenizer = WhitespaceTokenizer()
         self._token_indexers = token_indexers
         self._human_prob = human_prob
