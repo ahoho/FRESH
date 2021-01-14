@@ -47,11 +47,11 @@ if __name__ == "__main__":
 
     # Create splits
     held_out_prop = args.test_split + args.dev_split
-    if args.split_by == "date":
+    if args.split_by == ["date"]:
         data = data.sort_values('date')
         train_idx = int(len(data) * (1 - held_out_prop))
         dev_idx = int(len(data) * (1 - args.test_split))
-
+        
         train = data.iloc[:train_idx]
         dev = data.iloc[train_idx:dev_idx]
         test = data.iloc[dev_idx:]
