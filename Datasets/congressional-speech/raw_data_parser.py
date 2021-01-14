@@ -191,6 +191,7 @@ class SpeechesIterator:
         parties=["D", "R", "I"],
         data_directory="../hein-bound",
         min_sent_len=4,
+        min_sents_per_example,
         ngram_range=(1, 1),
         use_noun_chunks=False,
         lowercase=True,
@@ -204,6 +205,7 @@ class SpeechesIterator:
         self.congress_range = congresses
         self.parties = parties
         self.min_sent_len = min_sent_len
+        self.min_sents_per_example = min_sents_per_example
         self.ngram_range = ngram_range
         self.use_noun_chunks = use_noun_chunks
         self.lowercase = lowercase
@@ -247,16 +249,19 @@ class SpeechesIterator:
                     batch_size=self.batch_size,
                 )
             )
-
             for (_, row), doc in tqdm(_iterator, total=len(speeches)):
-                for i, sent in enumerate(doc.sents):
-                    if len(sent) >= self.min_sent_len:
+                sents = [sent for sent in doc.sents if len(sent) >= self.min_sent_len]
+                for i in range(0, len(sents), self.min_sents_per_example):
+                    sent_subset = sents[i:i+self.min_sents_per_example]
+                    text_len = sum([len(s) for s in sent_subset]) 
+                    text = " ".join([str(s) for s in sent_subset])
+                    if text_len > self.min_sent_len:
                         yield {
                             "id": f"{row.speech_id}_{i}",
                             "speech_id": row.speech_id,
                             "speaker_id": row.speakerid,
                             "source_file": row.file,
-                            "text": str(sent),
+                            "text": sent_subset,
 
                             "congress": congress,
                             "date": row.date,
@@ -270,7 +275,7 @@ class SpeechesIterator:
                             "state": row.state_speaker,
                             "district": row.district,
                             "is_voting": row.nonvoting == "voting",
-                        }
+                            }
             
             LOGGER.info("Completed reading through data")
 

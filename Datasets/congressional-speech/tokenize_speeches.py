@@ -38,6 +38,11 @@ if __name__ == "__main__":
         type=int,
         help="Minimum sentence length to consider"
     )
+    parser.add_argument("--min_sents_per_example",
+        default=1,
+        type=int,
+        help="Sentences to concatenate into a single example (if speech spans multiple)"
+    )
     parser.add_argument("--not_lazy",
         default=True,
         dest="lazy",
@@ -105,6 +110,7 @@ if __name__ == "__main__":
         parties=["D", "R", "I"],
         data_directory=args.data_dir,
         min_sent_len=args.min_sent_len,
+        min_sents_per_example=args.min_sents_per_example,
         ngram_range=ngram_range,
         use_noun_chunks=False,
         lowercase=args.lowercase,
